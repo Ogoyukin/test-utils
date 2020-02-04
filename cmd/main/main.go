@@ -10,7 +10,7 @@ import (
 func main() {
 	// # http://localhost:8080/load/assets/2020/1/1/1580500880123.png
 	host := flag.String("h", "http://localhost:8089/api/user/1", "Request host")
-	requestsCount := flag.Int("c", 10000, "Request count")
+	requestsCount := flag.Int("r", 10000, "Request count")
 	threadsCount := flag.Int("t", 20, "Threads count")
 	flag.Parse()
 	params := models.RequestParams{
