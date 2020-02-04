@@ -1,4 +1,4 @@
-package service
+package services
 
 import (
 	"fmt"
@@ -40,7 +40,7 @@ func TestRequestService_Execute(t *testing.T) {
 
 func makeResult(requestCount, threadCount int) models.Result {
 	params := models.RequestParams{RequestsCount: requestCount, ThreadsCount: threadCount}
-	service := RequestExecutor{params: params, repository: &randomRepositoryMock{}}
+	service := getRequestService{params: params, repository: &randomRepositoryMock{}}
 	return service.Execute()
 }
 
@@ -60,7 +60,7 @@ func BenchmarkAsyncExecute(b *testing.B) {
 	weight := semaphore.NewWeighted(int64(threadCount))
 	params := models.RequestParams{RequestsCount: requestCount, ThreadsCount: threadCount}
 
-	var service = RequestExecutor{params: params, repository: &successRepositoryMock{}}
+	var service = getRequestService{params: params, repository: &successRepositoryMock{}}
 	var failedChan = make(chan bool, requestCount)
 
 	for i := 0; i < requestCount; i++ {
@@ -77,7 +77,7 @@ func TestRequestService_asyncExecute(t *testing.T) {
 	weight := semaphore.NewWeighted(int64(threadCount))
 	params := models.RequestParams{RequestsCount: requestCount, ThreadsCount: threadCount}
 
-	var service = RequestExecutor{params: params, repository: &failRepositoryMock{}}
+	var service = getRequestService{params: params, repository: &failRepositoryMock{}}
 	var failedChan = make(chan bool, requestCount)
 
 	for i := 0; i < requestCount; i++ {
@@ -92,7 +92,7 @@ func TestRequestService_asyncExecute(t *testing.T) {
 	//weight = semaphore.NewWeighted(int64(threadCount))
 	params = models.RequestParams{RequestsCount: requestCount, ThreadsCount: threadCount}
 
-	service = RequestExecutor{params: params, repository: &successRepositoryMock{}}
+	service = getRequestService{params: params, repository: &successRepositoryMock{}}
 	failedChan = make(chan bool, requestCount)
 
 	for i := 0; i < requestCount; i++ {

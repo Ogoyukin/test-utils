@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/ogoyukin/testutils/models"
-	"github.com/ogoyukin/testutils/service"
+	"github.com/ogoyukin/testutils/services"
 )
 
 func main() {
@@ -18,7 +18,7 @@ func main() {
 		ThreadsCount:  *threadsCount,
 		Details:       models.RequestDetails{Host: *host},
 	}
-	result := service.Request(params)
+	result := services.Request(params)
 
 	fmt.Println("		FINISH		")
 	fmt.Println(fmt.Sprintf("Completed			: %v", result.Completed))

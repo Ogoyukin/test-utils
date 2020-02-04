@@ -1,4 +1,4 @@
-package service
+package services
 
 import (
 	"context"
@@ -11,16 +11,16 @@ import (
 
 func Request(params models.RequestParams) models.Result {
 	repository := repositories.NewRepository(params.Details)
-	executor := RequestExecutor{params: params, repository: repository}
-	return executor.Execute()
+	service := getRequestService{params: params, repository: repository}
+	return service.Execute()
 }
 
-type RequestExecutor struct {
+type getRequestService struct {
 	params     models.RequestParams
 	repository repositories.RequestRepository
 }
 
-func (m *RequestExecutor) Execute() models.Result {
+func (m *getRequestService) Execute() models.Result {
 	var failedChan = make(chan bool, m.params.RequestsCount)
 
 	wg := sync.WaitGroup{}
@@ -40,7 +40,7 @@ func (m *RequestExecutor) Execute() models.Result {
 	}
 }
 
-func (m *RequestExecutor) asyncExecute(wg *sync.WaitGroup, weight *semaphore.Weighted, failedChan chan<- bool) {
+func (m *getRequestService) asyncExecute(wg *sync.WaitGroup, weight *semaphore.Weighted, failedChan chan<- bool) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
