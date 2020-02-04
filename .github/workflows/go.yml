@@ -1,0 +1,37 @@
+name: Build and Test
+on: [push]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.13
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+
+      - name: Get dependencies
+        run: go mod tidy
+
+      - name: Test
+        run: go test -v -cover -race ./...
+
+      - name: Build
+        run: go build -v ./cmd/main
+
+      - name: Get linter
+        run: curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b $GITHUB_WORKSPACE v1.21.0
+
+      - name: Run linter
+        run: |
+          cd .
+          $GITHUB_WORKSPACE/golangci-lint run --out-format=tab --disable-all --tests=false --enable=unconvert \
+          --enable=govet --enable=golint --enable=errcheck --enable=deadcode --enable=structcheck \
+          --enable=varcheck --enable=ineffassign --enable=typecheck --enable=dupl --enable=goconst \
+          --enable=gosec --enable=golint ./... ;
+
