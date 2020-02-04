@@ -34,8 +34,6 @@ func TestRequestService_Execute(t *testing.T) {
 	result = makeResult(requestCount, threadCount)
 	assert.True(t, result.Completed+result.Failed == int64(requestCount))
 	assert.True(t, result.Duration.Milliseconds()/int64(requestCount) <= int64(1))
-	assert.True(t, result.RequestDuration(threadCount).Milliseconds() <= 2)
-	assert.True(t, result.RequestDuration(threadCount).Milliseconds() >= 1)
 }
 
 func makeResult(requestCount, threadCount int) models.Result {
@@ -83,7 +81,6 @@ func TestRequestService_asyncExecute(t *testing.T) {
 	for i := 0; i < requestCount; i++ {
 		service.asyncExecute(&wg, weight, failedChan)
 	}
-	assert.Equal(t, 0, len(failedChan))
 	wg.Wait()
 	assert.Equal(t, requestCount, len(failedChan))
 
